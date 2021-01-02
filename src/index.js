@@ -1,10 +1,19 @@
 /* eslint linebreak-style: [0] */
+/* i love when things come together eventually,
+though i hope that doesnt take that long in the future */
 
 function showTotalPokemons(totalPokemons) {
   const $target = document.querySelector('#total-pokemons');
   $target.textContent = `There are ${totalPokemons} Pokemons!`;
 }
 
+function handlePokemonSelection(pokemon, $card) {
+  $card.addEventListener('click', () => {
+    console.log(`aprete: ${$card.dataset.pokemonName}`);
+    console.log(pokemon);
+  });
+}
+// ui
 function createPokemonCard(pokemon) {
   const { name, sprites: { other: { 'official-artwork': { front_default: pokemonImage } } } } = pokemon;
 
@@ -16,6 +25,7 @@ function createPokemonCard(pokemon) {
   const $card = document.createElement('div');
   $card.setAttribute('class', 'card mt-3');
   $card.setAttribute('style', 'width: 15rem');
+  $card.dataset.pokemonName = name;
 
   const $cardImg = document.createElement('img');
   $cardImg.setAttribute('src', pokemonImage);
@@ -38,16 +48,9 @@ function createPokemonCard(pokemon) {
   $card.appendChild($cardBody);
   $col.appendChild($card);
 
+  handlePokemonSelection(pokemon, $card);
+
   $target.appendChild($col);
-}
-
-function handleSelection() {
-  const $list = document.querySelectorAll('.card');
-  console.log($list);
-}
-
-function redirectTo() {
-  console.log('qe onda redirect');
 }
 
 function loadPokemon(name) {
@@ -68,7 +71,7 @@ function showPokemonsList(pokemons) {
 function initialize() {
   fetch('https://pokeapi.co/api/v2/pokemon')
     .then((r) => r.json())
-    .then((r) => {
+    .then(async (r) => {
       // This is Destructuring assignment.
       const { count: totalPokemons, results: pokemonsList } = r;
       showTotalPokemons(totalPokemons);
